@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="emerald">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Візуальний трекер звичок і балансу</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <div class="header-top-row">
+        <div class="brand">
+          <div class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer broken ring (top-left sweeping into left leg) -->
+              <path
+                d="M58 14.5 C34 10.5 13 28.5 13 52 C13 68.5 22 81.5 34.5 85 C39 86.2 41.5 82 39 76.5 C36.5 71 39.5 64 43 60.5"
+                stroke="currentColor"
+                stroke-width="4.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <!-- Outer broken ring (right-bottom arc) -->
+              <path
+                d="M83.5 38 C87 52 82.5 67.5 71 77.5 C61 86 48 89 37 87"
+                stroke="currentColor"
+                stroke-width="4.4"
+                stroke-linecap="round"
+              />
+              <!-- Person head -->
+              <circle
+                cx="47.5"
+                cy="33.5"
+                r="6.2"
+                stroke="currentColor"
+                stroke-width="4.4"
+              />
+              <!-- Person dynamic figure reaching for the star -->
+              <path
+                d="M25.5 62.5 C27 52 34.5 46.5 43.5 46 C49 45.7 54 44 58.5 39.5 C61.5 36.5 64.5 33 67.5 35 C70 36.7 67.5 42 64.5 46 C60.5 51.2 56.5 54 55 55.5 C59.5 56.5 63.5 59.5 62.5 65.5 C61.8 69.5 59.5 74.5 56.5 74 C54 73.5 54.5 67.5 53.5 64 C52 61 48 60.5 43 60.5 M31.5 57.5 C34.5 54 38.5 53.5 41 54.5"
+                stroke="currentColor"
+                stroke-width="4.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <!-- Unique 5-pointed monoline star with core -->
+              <path
+                d="M76.8 9.5 L78.1 17.2 L85.6 19.3 L78.7 23.0 L79.1 30.7 L73.5 25.3 L66.2 28.0 L69.6 21.0 L64.8 14.9 L72.5 16.0 Z"
+                stroke="currentColor"
+                stroke-width="3.2"
+                stroke-linejoin="round"
+                fill="none"
+              />
+              <circle cx="74.5" cy="20.5" r="2.1" fill="currentColor" />
+            </svg>
+          </div>
+          <div>
+            <h1>Трекер звичок і балансу</h1>
+            <p id="current-date-label" class="subtitle"></p>
+          </div>
+        </div>
+
+        <button type="button" class="profile-header-btn" id="profile-header-btn" title="Мій профіль">
+          <span class="profile-header-avatar"><img src="avatar.jpg" alt="Аватар" class="profile-header-avatar-img" /></span>
+          <span class="profile-header-name" id="header-profile-name">Даниїїл</span>
+        </button>
+      </div>
+
+      <div class="header-controls">
+        <nav class="main-nav" id="main-nav" aria-label="Навігація розділами">
+          <span class="nav-indicator" id="nav-indicator"></span>
+          <button class="nav-btn active" data-tab="today">
+            Сьогодні <span class="nav-badge" id="nav-badge-today">0</span>
+          </button>
+          <button class="nav-btn" data-tab="heatmap">
+            Теплова карта <span class="nav-badge" id="nav-badge-streak">🔥0</span>
+          </button>
+          <button class="nav-btn" data-tab="balance">Колесо балансу</button>
+          <button class="nav-btn" data-tab="analytics">Аналітика</button>
+          <button class="nav-btn" data-tab="journal">Нотатки</button>
+          <button class="nav-btn" data-tab="achievements">
+            Досягнення <span class="nav-badge" id="nav-badge-ach">0/8</span>
+          </button>
+          <button class="nav-btn" data-tab="manage">Керування</button>
+        </nav>
+
+        <div class="theme-switcher" title="Кольорова тема">
+          <button class="theme-dot active" data-set-theme="emerald" aria-label="Смарагдова тема"></button>
+          <button class="theme-dot" data-set-theme="ocean" aria-label="Синя тема"></button>
+          <button class="theme-dot" data-set-theme="amber" aria-label="Бурштинова тема"></button>
+          <button class="theme-dot" data-set-theme="violet" aria-label="Фіолетова тема"></button>
+          <button class="theme-dot" data-set-theme="rose" aria-label="Малинова тема"></button>
+          <button class="theme-dot" data-set-theme="teal" aria-label="Бірюзова тема"></button>
+          <button class="theme-dot" data-set-theme="crimson" aria-label="Червона тема"></button>
+          <button class="theme-dot" data-set-theme="indigo" aria-label="Індиго тема"></button>
+          <button class="theme-dot" data-set-theme="coral" aria-label="Коралова тема"></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- СТОРІНКА 1: СЬОГОДНІ -->
+    <section id="tab-today" class="tab-panel active">
+      <div class="today-top-grid">
+        <div class="card clickable-top-card" data-goto="heatmap" title="Відкрити теплову карту">
+          <div class="card-header">
+            <h2>Прогрес дня</h2>
+            <span id="today-percent-badge" class="badge">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="today-progress-bar" class="progress-fill sweep-once" style="width: 0%"></div>
+          </div>
+          <p id="today-summary-text" class="muted-text">Виконано 0 із 0 активних звичок</p>
+        </div>
+
+        <div class="card clickable-top-card" data-goto="balance" title="Відкрити колесо балансу">
+          <div class="card-header">
+            <h2>Індекс балансу</h2>
+            <span id="balance-avg-badge" class="badge">0.0 / 10</span>
+          </div>
+          <p id="weakest-sphere-hint" class="muted-text">Найбільше просідає: —</p>
+          <p class="muted-text" style="margin-top: 8px">Перейти до колеса балансу →</p>
+        </div>
+
+        <div class="card clickable-top-card" data-goto="analytics" title="Відкрити аналітику">
+          <div class="card-header">
+            <h2>Фокус-таймер</h2>
+            <span id="focus-sessions-badge" class="badge">Сесій: 0</span>
+          </div>
+          <div class="focus-row">
+            <strong id="focus-timer-display" class="focus-clock">25:00</strong>
+            <div class="focus-presets">
+              <button class="pill" data-mins="15">15хв</button>
+              <button class="pill active" data-mins="25">25хв</button>
+              <button class="pill" data-mins="45">45хв</button>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top: 10px">
+            <button id="focus-start-btn" class="btn btn-primary">Старт</button>
+            <button id="focus-reset-btn" class="btn btn-secondary">Скинути</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card energy-card">
+        <div class="card-header wrap" style="margin-bottom: 0">
+          <div>
+            <h3>Самопочуття та енергія сьогодні</h3>
+            <p class="muted-text" id="energy-status-text">Оціни свій стан для щоденного журналу</p>
+          </div>
+          <div class="energy-pills" id="energy-pills">
+            <button class="energy-btn" data-energy="1">😫 1</button>
+            <button class="energy-btn" data-energy="2">😕 2</button>
+            <button class="energy-btn" data-energy="3">😐 3</button>
+            <button class="energy-btn" data-energy="4">🙂 4</button>
+            <button class="energy-btn" data-energy="5">⚡ 5</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <h2>Чекліст звичок на сьогодні</h2>
+          <div class="quick-bulk-actions">
+            <button id="complete-all-btn" class="btn btn-secondary btn-sm">Відмітити всі</button>
+            <button id="clear-today-btn" class="btn btn-secondary btn-sm">Скинути день</button>
+          </div>
+        </div>
+
+        <div class="toolbar-row">
+          <div id="category-filters" class="filter-pills">
+            <button class="pill active" data-cat="Усі">Усі</button>
+            <button class="pill" data-cat="Спорт">Спорт</button>
+            <button class="pill" data-cat="Навчання">Навчання</button>
+            <button class="pill" data-cat="Сон">Сон</button>
+            <button class="pill" data-cat="Відпочинок">Відпочинок</button>
+            <button class="pill" data-cat="Здоров'я">Здоров'я</button>
+          </div>
+          <div class="search-sort-group">
+            <input type="text" id="habit-search-input" placeholder="Пошук звички..." />
+            <select id="habit-sort-select" aria-label="Сортування">
+              <option value="default">За порядком</option>
+              <option value="undone">Спочатку невиконані</option>
+              <option value="streak">За стріком</option>
+            </select>
+          </div>
+        </div>
+
+        <form id="quick-add-form" class="inline-form">
+          <input type="text" id="habit-title-input" placeholder="Нова звичка (напр. 30 хв підтягувань або читання)..." required maxlength="60" />
+          <select id="habit-cat-select">
+            <option value="Спорт">Спорт</option>
+            <option value="Навчання">Навчання</option>
+            <option value="Сон">Сон</option>
+            <option value="Відпочинок">Відпочинок</option>
+            <option value="Здоров'я">Здоров'я</option>
+          </select>
+          <button type="submit" class="btn btn-primary">+ Додати</button>
+        </form>
+
+        <ul id="today-habit-list" class="habit-list"></ul>
+      </div>
+
+      <div class="today-bottom-grid">
+        <div class="card">
+          <div class="card-header wrap">
+            <div>
+              <h2>Головні задачі дня</h2>
+              <p class="muted-text">Мікро-план на сьогодні окрім звичок</p>
+            </div>
+            <span id="daily-tasks-badge" class="badge">0 / 0</span>
+          </div>
+
+          <form id="daily-task-form" class="inline-form">
+            <input type="text" id="daily-task-input" placeholder="Додати справу на сьогодні..." required maxlength="70" />
+            <button type="submit" class="btn btn-primary">+ Додати</button>
+          </form>
+
+          <ul id="daily-task-list" class="daily-task-list"></ul>
+        </div>
+
+        <div class="card water-card">
+          <div class="card-header wrap">
+            <div>
+              <h2>Гідратація</h2>
+              <p class="muted-text" id="water-status-text">Випито 0.0 з 2.0 л (ціль: 8 склянок)</p>
+            </div>
+            <span id="water-badge" class="badge">0 / 8 💧</span>
+          </div>
+
+          <div id="water-glasses" class="water-glasses" aria-label="Трекер води"></div>
+
+          <div class="water-controls">
+            <button type="button" id="water-minus-btn" class="btn btn-secondary">−1 склянка</button>
+            <button type="button" id="water-plus-btn" class="btn btn-primary">+1 склянка</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <div>
+            <h2>Ритм останніх 7 днів</h2>
+            <p class="muted-text">Натисни на день, щоб переглянути деталі в тепловій карті</p>
+          </div>
+          <span id="week-rhythm-avg-badge" class="badge">Середнє: 0%</span>
+        </div>
+        <div id="week-rhythm-strip" class="week-rhythm-strip"></div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 2: ТЕПЛОВА КАРТА -->
+    <section id="tab-heatmap" class="tab-panel">
+      <div class="card heatmap-period-bar">
+        <span class="heatmap-period-label">Період відображення:</span>
+        <div class="period-switch">
+          <button class="pill" data-days="30">30 днів</button>
+          <button class="pill active" data-days="90">90 днів</button>
+          <button class="pill" data-days="180">180 днів</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="card stat-card">
+          <span class="muted-text">Найкраща серія (стрік)</span>
+          <strong id="stat-best-streak" class="stat-value">0 дн.</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Активних днів поспіль</span>
+          <strong id="stat-current-streak" class="stat-value">0 дн.</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Середня активність</span>
+          <strong id="stat-avg-rate" class="stat-value">0%</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <h2>Теплова карта</h2>
+          <div class="heatmap-controls">
+            <select id="heatmap-cat-filter" aria-label="Категорія для сітки">
+              <option value="Усі">Усі категорії</option>
+              <option value="Спорт">Спорт</option>
+              <option value="Навчання">Навчання</option>
+              <option value="Сон">Сон</option>
+              <option value="Відпочинок">Відпочинок</option>
+              <option value="Здоров'я">Здоров'я</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="heatmap-grid" class="heatmap-grid" role="grid"></div>
+
+        <div class="heatmap-footer">
+          <span class="muted-text">Натисни на клітинку, щоб побачити деталі дня</span>
+          <div class="legend">
+            <span>Менше</span>
+            <span class="cell lv-0"></span>
+            <span class="cell lv-1"></span>
+            <span class="cell lv-2"></span>
+            <span class="cell lv-3"></span>
+            <span class="cell lv-4"></span>
+            <span>Більше</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="heatmap-bottom-grid">
+        <div class="card" id="day-inspector-card">
+          <h3 id="inspector-date-title">Деталі обраного дня</h3>
+          <div id="inspector-date-body" class="muted-text">Обери будь-який квадратик на тепловій карті вище.</div>
+        </div>
+
+        <div class="card">
+          <h3>Активність за днями тижня</h3>
+          <div id="weekday-bars" class="weekday-bars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 3: КОЛЕСО БАЛАНСУ -->
+    <section id="tab-balance" class="tab-panel">
+      <div class="balance-layout">
+        <div class="card canvas-card">
+          <div class="card-header wrap">
+            <div>
+              <h2>Колесо життєвого балансу</h2>
+              <span class="muted-text" id="harmony-score-text">Індекс гармонії: 0%</span>
+            </div>
+            <div class="snapshot-controls">
+              <select id="snapshot-select" aria-label="Збережені зрізи"></select>
+              <button id="save-week-snapshot-btn" class="btn btn-secondary">Зафіксувати зріз</button>
+            </div>
+          </div>
+          <canvas id="balance-canvas" width="420" height="420"></canvas>
+          <div class="canvas-legend">
+            <span><i class="dot-solid"></i> Поточний стан</span>
+            <span><i class="dot-dashed"></i> Обраний зріз для порівняння</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header wrap">
+            <div>
+              <h2>Оцінка сфер (1–10)</h2>
+              <p class="muted-text">Змінюй повзунки вручну або синхронізуй зі звичками за 7 днів.</p>
+            </div>
+            <button type="button" id="sync-balance-btn" class="btn btn-secondary btn-sm">Синхронізувати зі звичками</button>
+          </div>
+          <div id="sliders-container" class="sliders-list"></div>
+
+          <div class="advice-box">
+            <p id="balance-advice-text">Порада: оціни сфери життя.</p>
+            <button id="add-weak-habit-btn" class="btn btn-primary">Додати звичку для просілої сфери</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 4: АНАЛІТИКА -->
+    <section id="tab-analytics" class="tab-panel">
+      <div class="stats-row">
+        <div class="card stat-card">
+          <span class="muted-text">Ефективність за 7 днів</span>
+          <strong id="analytics-week-rate" class="stat-value">0%</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Фокус-час за тиждень</span>
+          <strong id="analytics-week-focus" class="stat-value">0 сесій</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Середня енергія тижня</span>
+          <strong id="analytics-week-energy" class="stat-value">— / 5</strong>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <div class="card">
+          <div class="card-header wrap">
+            <h2>Динаміка за останні 7 днів</h2>
+            <span class="muted-text">Виконання активних звичок</span>
+          </div>
+          <div id="weekly-chart" class="weekly-chart"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header wrap">
+            <h2>Прогрес за категоріями</h2>
+            <span class="muted-text">Частка виконань за 7 днів</span>
+          </div>
+          <div id="category-breakdown" class="cat-breakdown-list"></div>
+        </div>
+      </div>
+
+      <div class="analytics-grid" style="margin-top: 16px">
+        <div class="card">
+          <div class="card-header wrap">
+            <h2>Рейтинг звичок за 7 днів</h2>
+            <span class="muted-text">За стабільністю виконання</span>
+          </div>
+          <div id="analytics-habit-ranking" class="cat-breakdown-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header wrap">
+            <h2>Енергія та фокус за 7 днів</h2>
+            <span id="analytics-insight-badge" class="badge">Інсайт тижня</span>
+          </div>
+          <div id="analytics-energy-chart" class="weekly-chart"></div>
+          <p id="analytics-insight-text" class="muted-text" style="margin-top: 12px"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 5: НОТАТКИ ТА РЕФЛЕКСІЯ -->
+    <section id="tab-journal" class="tab-panel">
+      <div class="card">
+        <div class="card-header wrap">
+          <div>
+            <h2>Щоденник рефлексії</h2>
+            <p class="muted-text" id="journal-active-date-label">Нова нотатка за сьогодні</p>
+          </div>
+          <span id="journal-saved-badge" class="badge" style="opacity: 0">Додано ✓</span>
+        </div>
+
+        <div class="journal-tags-bar">
+          <div class="journal-tags" id="journal-tags"></div>
+          <div class="journal-add-tag">
+            <input type="text" id="new-tag-input" placeholder="Новий #тег..." maxlength="24" />
+            <button type="button" id="add-tag-btn" class="btn btn-secondary btn-sm">+ Тег</button>
+          </div>
+        </div>
+
+        <form id="journal-form" class="journal-form">
+          <textarea id="journal-textarea" class="journal-textarea" rows="4" placeholder="Що сьогодні вдалося найкраще? Які інсайти чи настрій?"></textarea>
+          <div class="btn-row" style="margin-top: 10px">
+            <button type="submit" class="btn btn-primary">+ Додати нотатку</button>
+            <button type="button" id="journal-clear-btn" class="btn btn-secondary">Очистити поле</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <div>
+            <h2>Усі нотатки</h2>
+            <span class="muted-text" id="journal-count-label">0 записів</span>
+          </div>
+          <div class="search-sort-group">
+            <input type="text" id="journal-search-input" placeholder="Пошук у нотатках..." />
+            <select id="journal-filter-tag" aria-label="Фільтр за тегом">
+              <option value="Усі">Усі теги</option>
+            </select>
+          </div>
+        </div>
+        <div id="journal-feed" class="journal-feed"></div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 6: ДОСЯГНЕННЯ -->
+    <section id="tab-achievements" class="tab-panel">
+      <div class="card level-card clickable-rank-card" id="rank-card-trigger" title="Натисни, щоб перейти до списку всіх рангів">
+        <div class="card-header wrap">
+          <div>
+            <span class="badge" id="user-level-badge">Рівень 1</span>
+            <h2 style="margin-top: 6px" id="user-rank-title">Новачок дисципліни</h2>
+          </div>
+          <div style="text-align: right">
+            <strong id="user-xp-label" class="stat-value">0 XP</strong>
+            <div class="muted-text" style="font-size: 0.78rem" id="rank-next-preview">Натисни, щоб побачити всі ранги ▾</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div id="xp-progress-bar" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <p class="muted-text" id="xp-next-hint">До наступного рівня: 100 XP</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="card stat-card">
+          <span class="muted-text">Усього виконань звичок</span>
+          <strong id="ach-total-checkins" class="stat-value">0</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Фокус-сесій завершено</span>
+          <strong id="ach-total-focus" class="stat-value">0</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Відкрито нагород</span>
+          <strong id="ach-unlocked-count" class="stat-value">0 / 8</strong>
+        </div>
+      </div>
+
+      <div id="achievements-grid" class="achievements-grid"></div>
+
+      <div class="achievements-bottom-grid">
+        <div class="card">
+          <div class="card-header wrap">
+            <div>
+              <h2>Джерела досвіду (XP)</h2>
+              <p class="muted-text">З чого складається твій прогрес</p>
+            </div>
+          </div>
+          <div id="xp-breakdown-list" class="cat-breakdown-list"></div>
+        </div>
+
+        <div class="card" id="rank-ladder-card">
+          <div class="card-header wrap">
+            <div>
+              <h2>Шлях рангів</h2>
+              <p class="muted-text" id="rank-ladder-subtitle">Усього 10 рангів · гортай список</p>
+            </div>
+            <span id="rank-ladder-badge" class="badge">1 / 10</span>
+          </div>
+          <div id="rank-ladder-list" class="rank-ladder-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 5: КЕРУВАННЯ -->
+    <section id="tab-manage" class="tab-panel">
+      <div class="card">
+        <div class="card-header wrap">
+          <h2>Керування звичками</h2>
+          <span class="muted-text">Змінюй порядок, цілі на тиждень або архівуй</span>
+        </div>
+        <div id="manage-habits-list" class="manage-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <div>
+            <h2>Швидкі шаблони звичок</h2>
+            <p class="muted-text">Додай готові корисні звички в один клік</p>
+          </div>
+        </div>
+        <div id="habit-templates-grid" class="templates-grid"></div>
+      </div>
+    </section>
+
+    <!-- СТОРІНКА 8: ПРОФІЛЬ -->
+    <section id="tab-profile" class="tab-panel">
+      <div class="card profile-hero-card">
+        <div class="profile-hero-left">
+          <div class="profile-avatar-lg" id="profile-avatar-lg">
+            <img src="avatar.jpg" alt="Аватар" class="profile-avatar-lg-img" />
+          </div>
+          <div>
+            <h2 id="profile-nickname-display">Даниїїл</h2>
+            <p class="muted-text" id="profile-username-display">@danyiil</p>
+          </div>
+        </div>
+        <div class="profile-hero-right">
+          <span class="badge" id="profile-rank-badge">Новачок дисципліни</span>
+          <button type="button" id="profile-edit-toggle-btn" class="btn btn-secondary btn-sm">Редагувати</button>
+        </div>
+      </div>
+
+      <form id="profile-edit-form" class="card profile-edit-form" style="display: none">
+        <div class="card-header">
+          <h3>Редагування профілю</h3>
+        </div>
+        <div class="inline-form" style="margin-bottom: 0">
+          <input type="text" id="profile-nickname-input" placeholder="Нікнейм..." maxlength="32" required />
+          <input type="text" id="profile-username-input" placeholder="@username..." maxlength="28" required />
+          <button type="submit" class="btn btn-primary">Зберегти</button>
+        </div>
+      </form>
+
+      <div class="stats-row">
+        <div class="card stat-card">
+          <span class="muted-text">Найдовша серія</span>
+          <strong id="profile-longest-streak" class="stat-value">0 дн.</strong>
+        </div>
+        <div class="card stat-card">
+          <span class="muted-text">Нинішня серія</span>
+          <strong id="profile-current-streak" class="stat-value">0 дн.</strong>
+        </div>
+        <div class="card stat-card clickable-top-card" data-goto="achievements" title="Відкрити досягнення та ранги">
+          <span class="muted-text">Твій ранг</span>
+          <strong id="profile-rank-stat" class="stat-value" style="font-size: 1.15rem">Новачок дисципліни</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <div>
+            <h2>Улюблені звички</h2>
+            <p class="muted-text">Натискай ⭐ щоб обрати головні звички профілю</p>
+          </div>
+          <span id="profile-fav-count" class="badge">0 обраних</span>
+        </div>
+        <div id="profile-fav-habits" class="profile-fav-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header wrap">
+          <div>
+            <h2>Список друзів</h2>
+            <p class="muted-text">Друзі, які також тримають ритм</p>
+          </div>
+          <span id="profile-friends-count" class="badge">0 друзів</span>
+        </div>
+
+        <form id="profile-add-friend-form" class="inline-form">
+          <input type="text" id="friend-nickname-input" placeholder="Нікнейм друга..." required maxlength="30" />
+          <input type="text" id="friend-username-input" placeholder="@username..." required maxlength="24" />
+          <button type="submit" class="btn btn-primary">+ Додати друга</button>
+        </form>
+
+        <div id="profile-friends-list" class="friends-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-inner">
+      <div class="footer-quote-box">
+        <span class="footer-quote-icon">✦</span>
+        <div>
+          <p id="footer-quote-text" class="footer-quote-text">Маленькі щоденні кроки формують великі результати.</p>
+          <span class="muted-text footer-sub">Щоденна порада для ритму</span>
+        </div>
+        <button id="footer-next-quote-btn" class="btn btn-secondary btn-sm" title="Наступна порада">↻ Порада</button>
+      </div>
+
+      <div class="footer-meta">
+        <div class="footer-pills">
+          <span class="footer-pill" id="footer-level-pill">Рівень 1 · 0 XP</span>
+          <span class="footer-pill" id="footer-streak-pill">🔥 Серія: 0 дн.</span>
+          <span class="footer-pill" id="footer-theme-pill">Тема: Смарагд</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script-js/app.js"></script>
+</body>
+</html>
